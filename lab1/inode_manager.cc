@@ -1,5 +1,9 @@
 #include "inode_manager.h"
-
+/**
+ * 30/09/2016
+ * editor name: Zhitong Yan
+ * id: 5140219099
+ */
 // disk layer -----------------------------------------
 
 disk::disk()
@@ -17,6 +21,11 @@ disk::read_block(blockid_t id, char *buf)
    *put the content of target block into buf.
    *hint: use memcpy
   */
+  if ((id < 0) || (id > BLOCK_NUM) || (buf == NULL) {
+    return;
+  }
+  memcpy(buf, blocks[id], BLOCK_SIZE);
+  return;
 }
 
 void
@@ -26,6 +35,11 @@ disk::write_block(blockid_t id, const char *buf)
    *your lab1 code goes here.
    *hint: just like read_block
   */
+  if ((id < 0) || (id > BLOCK_NUM) || (buf == NULL) {
+    return;
+  }
+  memcpy(blocks[id], buf, BLOCK_SIZE);
+  return;
 }
 
 // block layer -----------------------------------------
@@ -200,6 +214,20 @@ inode_manager::getattr(uint32_t inum, extent_protocol::attr &a)
    * note: get the attributes of inode inum.
    * you can refer to "struct attr" in extent_protocol.h
    */
+   inode_t *inode_p = get_inode(inum);
+   if (inode_p != NULL) {
+     a.type = inode_p->type;
+     a.atime = inode_p->atime;
+     a.mtime = inode_p->mtime;
+     a.ctime = inode_p->ctime;
+     a.size = inode_p->size;
+   } else {
+     a.type = 0;
+     a.atime = 0;
+     a.mtime = 0;
+     a.ctime = 0;
+     a.size = 0;
+   }
 }
 
 void
