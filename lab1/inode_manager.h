@@ -7,7 +7,7 @@
 #include "extent_protocol.h"
 
 #define DISK_SIZE  1024*1024*16
-#define BLOCK_SIZE 512
+#define BLOCK_SIZE 512		// bytes
 #define BLOCK_NUM  (DISK_SIZE/BLOCK_SIZE)
 
 typedef uint32_t blockid_t;
@@ -27,9 +27,11 @@ class disk {
 // block layer -----------------------------------------
 
 typedef struct superblock {
-  uint32_t size;
-  uint32_t nblocks;
-  uint32_t ninodes;
+  uint32_t size;	// initially BLOCK_SIZE * BLOCK_NUM
+  // ???
+  uint32_t nblocks;	// initially BLOCK_NUM
+  // ???
+  uint32_t ninodes;	// initially INODE_NUM
 } superblock_t;
 
 class block_manager {
@@ -40,8 +42,8 @@ class block_manager {
   block_manager();
   struct superblock sb;
 
-  uint32_t alloc_block();
-  void free_block(uint32_t id);
+  uint32_t alloc_block();	// get an unused block and sign using
+  void free_block(uint32_t id);	// free a using block
   void read_block(uint32_t id, char *buf);
   void write_block(uint32_t id, const char *buf);
 };
@@ -58,7 +60,7 @@ class block_manager {
 #define IBLOCK(i, nblocks)     ((nblocks)/BPB + (i)/IPB + 3)
 
 // Bitmap bits per block
-#define BPB           (BLOCK_SIZE*8)
+#define BPB           (BLOCK_SIZE*8)	// turn byte into bit?
 
 // Block containing bit for block b
 #define BBLOCK(b) ((b)/BPB + 2)

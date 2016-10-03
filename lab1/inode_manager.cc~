@@ -77,7 +77,7 @@ block_manager::alloc_block()
 			*mask = *mask | (1 << index);
 			write_block(BBLOCK(bid), block_buf);
 			bid++;
-			return bid-1;	// ??? return bid; 
+			return bid-1; 
 		} else {
 			bid++;
 			if (bid >= BLOCK_NUM) {
@@ -422,26 +422,5 @@ inode_manager::remove_file(uint32_t inum)
    * do not forget to free memory if necessary.
    */
 	inode_t *inode_p = get_inode(inum);
-	if (inode_p == NULL) return;
-
-	uint32_t num = (inode_p->size + BLOCK_SIZE - 1) / BLOCK_SIZE;
-	uint32_t min = num > NDIRECT ? NDIRECT : num;
-	// remove all blocks related to this file(inode)
-	for (uint32_t i = 0; i < min; i++) {
-		bm->free_block(inode_p->blocks[i]);	
-	}
-	
-	// indirect blk
-	blockid_t id = inode_p->blocks[NDIRECT];
-    	if (num > NDIRECT) {
-        	char buf[BLOCK_SIZE];
-        	bm->read_block(id, buf);	// indirect blk
-        	uint32_t *ip = (uint32_t *)buf;
-        	for(uint32_t i = 0; i < num - NDIRECT; i++) {
-            		bm->free_block(ip[i]);
-		}
-        	bm->free_block(id);
-    	}
-    	free(inode_p);
-    	free_inode(inum);
+		
 }
